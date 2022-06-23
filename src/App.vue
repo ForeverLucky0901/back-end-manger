@@ -4,7 +4,10 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </nav> -->
-    <router-view />
+    <keep-alive v-if="$route.meta.iskeepAlive">
+      <router-view />
+    </keep-alive>
+    <router-view velse />
   </div>
 </template>
 

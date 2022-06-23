@@ -6,30 +6,29 @@
       <el-breadcrumb-item>{{ title }}</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="menuname">{{ title }}</div>
-    <div class="content" v-html="htmlContent">
-    
-    </div>
+    <div class="content" v-html="htmlContent"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: "ArtDetail",
-  data () {
+  data() {
     return {
       title: "查看文章详情",
-      htmlContent:  "",
-      id:null
-    }
+      htmlContent: "",
+      id: null,
+    };
   },
-  created(){
+  created() {
     this.id = this.$route.query.id;
-    this.htmlContent = this.$store.state.artData.find(item => item.id == this.id).content
-      }
-}
+    this.htmlContent = this.$store.state.artData.find(
+      (item) => item.id == this.id
+    ).content;
+  },
+};
 </script>
 
 <style scoped>
-
 </style>>
 

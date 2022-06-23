@@ -43,7 +43,8 @@
           type="primary"
           icon="el-icon-plus"
           @click="handleClick('添加')"
-          >添加</el-button>
+          >添加</el-button
+        >
       </el-form-item>
     </el-form>
 
@@ -60,7 +61,12 @@
       </el-table-column>
       <el-table-column prop="cover" label="封面" width="200"> </el-table-column>
       <el-table-column prop="url" label="链接" width="200"> </el-table-column>
-      <el-table-column prop="content" label="内容" show-overflow-tooltip width="200">
+      <el-table-column
+        prop="content"
+        label="内容"
+        show-overflow-tooltip
+        width="200"
+      >
       </el-table-column>
       <el-table-column prop="tag" label="标签" width="180">
         <template slot-scope="scope">
@@ -78,7 +84,9 @@
       <el-table-column label="操作" fixed="right" width="230">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleLook(scope.row)">查看</el-button>
-          <el-button size="mini" @click="handleClick('编辑', scope.row)">编辑</el-button>
+          <el-button size="mini" @click="handleClick('编辑', scope.row)"
+            >编辑</el-button
+          >
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)"
             >删除</el-button
           >
@@ -142,15 +150,15 @@ export default {
           title,
         },
       });
-      if ( row ) {
-         this.$store.commit('editArtData',row)
+      if (row) {
+        this.$store.commit("editArtData", row);
       }
     },
-    handleLook( row) {
-       this.$router.push({
+    handleLook(row) {
+      this.$router.push({
         path: "/artcle/artDetail",
         query: {
-          id: row.id
+          id: row.id,
         },
       });
       // 把查看的文章存到vuex中
