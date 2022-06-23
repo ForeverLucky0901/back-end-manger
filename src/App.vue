@@ -10,7 +10,14 @@
     <router-view velse />
   </div>
 </template>
-
+<script>
+import {loadEnv} from "vite"
+export default {
+  mounted(){
+    console.log(loadEnv(mode, process.cwd()).VITE_BASEURL)
+  }
+}
+</script>
 <style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
