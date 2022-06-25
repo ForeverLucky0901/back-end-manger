@@ -9,9 +9,14 @@ Vue.use(VueRouter)
 const routes = [{
         path: '/',
         name: '首页',
+        redirect: '/basic/index',
         component: Home,
         icon: 'el-icon-tickets',
         children: [{
+                path: '/',
+                redirect: '/basic/index'
+            },
+            {
                 path: '/basic/index',
                 name: '基础管理',
                 icon: '',
@@ -19,7 +24,7 @@ const routes = [{
                     import ('../views/basic/index.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -30,7 +35,7 @@ const routes = [{
                     import ('../views/menu/index.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -41,7 +46,7 @@ const routes = [{
                     import ('../views/artcle/index.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -52,7 +57,7 @@ const routes = [{
                     import ('../views/artcle/ArtEdit.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -63,7 +68,7 @@ const routes = [{
                     import ('../views/artcle/artDetail.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -74,7 +79,7 @@ const routes = [{
                     import ('../views/system/index.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
             {
@@ -85,13 +90,13 @@ const routes = [{
                     import ('../views/about/About.vue'),
                 meta: {
                     isLogin: true,
-                    iskeepAlive: false
+                    isKeepAlive: false
                 }
             },
         ]
     },
     {
-        path: '/login',
+        path: '/',
         name: '登陆',
         component: () =>
             import ('../views/login/index.vue')
@@ -101,15 +106,22 @@ const routes = [{
         name: 'Error',
         component: () =>
             import ('../views/menu/index.vue')
-    },
-    {
-        path: '/',
-        redirect: '/basic/index'
-    },
+    }
 ]
 
+// // 这里就可以进行vue-router的beforeEach拦截了，你也可以放其他地方，我比较喜欢放这
+// router.beforeEach((to, from, next) => {
+//   document.title = to.meta.title || '';
+//   if (to.meta.isLogin) {
+//     next('/login');
+//   } else {
+//     next();
+//   }
+// });
+
 const router = new VueRouter({
-    routes
+    routes,
+    mode: 'hash'
 });
 
 export default router;

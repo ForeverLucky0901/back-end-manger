@@ -165,7 +165,7 @@
 
 <script>
 import { mapState } from "vuex";
-import Pagination from "../../../component/pagination.vue";
+import Pagination from "../../component/pagination.vue";
 import { nanoid } from "nanoid";
 export default {
   name: "Basic",
@@ -245,9 +245,7 @@ export default {
       if (title === "添加") {
         this.editForm = {};
       } else if (title === "编辑") {
-        let obj = JSON.parse(JSON.stringify(row));
-
-        this.editForm = obj;
+        this.editForm = JSON.parse(JSON.stringify(row));
       }
     },
     handleDel(row) {

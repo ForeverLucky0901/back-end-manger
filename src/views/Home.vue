@@ -19,11 +19,11 @@
 </template>
 
 <script>
-import LeftNav from "../../component/leftnav.vue";
-import HeadNav from "../../component/headnav.vue";
+import LeftNav from "../component/leftnav.vue";
+import HeadNav from "../component/headnav.vue";
 
 export default {
-  components: { LeftNav, HeadNav },
+  components: { LeftNav, HeadNav }
 };
 </script>
 

@@ -145,8 +145,7 @@ export default {
       if (title === "添加") {
         this.cateForm = {};
       } else if (title === "编辑") {
-        let obj = JSON.parse(JSON.stringify(row));
-        this.cateForm = obj;
+        this.cateForm = JSON.parse(JSON.stringify(row));
       }
     },
     handleEdit(title, row) {
@@ -204,4 +203,5 @@ export default {
 </script>
 
 <style>
+
 </style>
