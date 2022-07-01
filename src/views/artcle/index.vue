@@ -58,8 +58,13 @@
       </el-table-column>
       <el-table-column prop="createTime" label="创作时间" width="180">
       </el-table-column>
-      <el-table-column prop="cover" label="封面" width="200"> </el-table-column>
-      <el-table-column prop="url" label="链接" width="200"> </el-table-column>
+      <el-table-column prop="cover" label="封面" width="200">
+      </el-table-column>
+      <el-table-column prop="url" label="链接" width="200"> 
+        <template slot-scope="scope">
+          <el-image  style="width: 100px;" :src="scope.row.url" alt="图片加载失败"></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="content" label="内容" show-overflow-tooltip width="200">
       </el-table-column>
       <el-table-column prop="tag" label="标签" width="180">
@@ -128,7 +133,6 @@ export default {
       title: "添加",
     };
   },
-
   methods: {
     search() {
       // 搜索

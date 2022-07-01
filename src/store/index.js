@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    token:null,
     account: { // 默认账号
       name: "admin",
       password: "admin123"
@@ -24,18 +25,15 @@ export default new Vuex.Store({
     ],
     // 菜单管理分类数据
     cateData: [
-      { cateValue: "娱乐", createUser: "张飞", id: "rBGRs", date: "2022/6/22 00:00:36" },
-      { cateValue: "娱乐", createUser: "张飞", id: "rBGRs", date: "2022/6/22 00:00:36" },
-      { cateValue: "音乐", createUser: "小燕子", id: "Ggqur", date: "2022/6/22 00:00:53" },
-      { cateValue: "热点", createUser: "赵云", id: "4rRmF", date: "2022/6/22 00:01:09" },
-      { cateValue: "游戏", createUser: "百里屠苏", id: "jrp7y", date: "2022/6/22 00:01:24" },
-      { cateValue: "科技", createUser: "白的夜", id: "djI2T", date: "2022/6/22 00:01:41" },
-      { cateValue: "电影", createUser: "无名", id: "Vrpnc", date: "2022/6/22 00:01:53" },
+      { cateValue: "娱乐", createUser: "佳欣", date: "2022/6/26 00:15:26", id: "FXbsZ" },
+      { cateValue: "娱乐", createUser: "佳欣", id: "FXbsZ", date: "2022/6/26 00:15:26" },
+      { cateValue: "音乐", createUser: "佳欣", id: "BD3wP", date: "2022/6/26 00:15:40" },
+      { cateValue: "科技", createUser: "佳欣", id: "jUA_g", date: "2022/6/26 00:15:50" },
+      { cateValue: "游戏", createUser: "佳欣", id: "fbpWO", date: "2022/6/26 00:16:00" },
+      { cateValue: "电影", createUser: "佳欣", id: "tRBPL", date: "2022/6/26 00:16:17" },
       { cateValue: "美图", createUser: "小姐姐", id: "lHOyU", date: "2022/6/22 00:02:07" },
-      { cateValue: "文章", createUser: "赵文卓", id: "vXU4g", date: "2022/6/22 00:02:18" },
-      { cateValue: "图文故事", createUser: "张震", id: "zI5CQ", date: "2022/6/22 00:02:47" },
-
     ],
+    // 文章总数据
     artData: [
       {
         id: 10001,
@@ -91,6 +89,10 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    loginSuccess() {
+      console.log(state.token);
+      state.token = null;
+    },
     addCount (state, num) {
       state.count += num
     },
@@ -110,9 +112,11 @@ export default new Vuex.Store({
       // 跟新基础管理用户数据
       state.tableData = payload
     },
-    setArtData (state, payload) {
+    addArtData (state, payload) {
       // 添加文章数据
+      console.log(3,state, payload);
       state.artData.push(payload)
+      console.log(4,state, payload);
     },
     // 
     editArtData (state, payload) {
@@ -125,19 +129,21 @@ export default new Vuex.Store({
     }
   },
   actions: {},
-  // 默认存储到localStorage,
-  // plugins: [createPersistedState()],
+  // 这种默认写法会将vuex中的所有数据存储到Local Storage中，
+  plugins: [createPersistedState()],
   // 制定存储数据
-  plugins: [createPersistedState({
-    storage: window.sessionStorage,
-    reducer (val) {
-      return {
-        account: val.account,
-        tableData: val.tableData,
-        cateData: val.cateData
-      };
-    }
-  })]
+  // plugins: [createPersistedState({
+    // storage: window.sessionStorage,
+  //   reducer (val) {
+  //     return {
+  //       account: val.account,
+  //       tableData: val.tableData,
+  //       cateData: val.cateData,
+  //       artData: val.artData,
+  //       artEditData: val.artEditData
+  //     };
+  //   }
+  // })]
 
 
 })

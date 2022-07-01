@@ -52,7 +52,6 @@
       </el-table-column>
       <el-table-column prop="usename" label="用户名" width="120">
       </el-table-column>
-
       <el-table-column prop="address" label="地址"> </el-table-column>
       <el-table-column prop="phone" label="手机号" width="120">
       </el-table-column>
@@ -64,8 +63,7 @@
           <el-switch
             v-model="scope.row.state"
             active-color="#13ce66"
-            inactive-color="#ff4949"
-          >
+            inactive-color="#ff4949">
           </el-switch>
         </template>
       </el-table-column>
@@ -167,6 +165,7 @@
 import { mapState } from "vuex";
 import Pagination from "../../component/pagination.vue";
 import { nanoid } from "nanoid";
+import {getAllUserInfo,addUserInfo,editUserInfo,delUserInfo , } from '../../request/api'
 export default {
   name: "Basic",
   components: {
@@ -190,7 +189,7 @@ export default {
         createTime: "",
         state: false,
       },
-      // tableData: null,
+      tableData: [],
       rules: {
         company: { required: true, message: "请输入公司名称", trigger: "blur" },
         usename: { required: true, message: "请输入用户名", trigger: "blur" },
@@ -213,19 +212,27 @@ export default {
     // ...mapState({
     //   tableData: (state) => state.tableData,
     // }),
-    tableData: {
-      get() {
-        return this.$store.state.tableData;
-      },
-      set(v) {
-        this.$store.state.tableData = v;
-      },
-    },
+    // tableData: {
+    //   get() {
+    //     return this.$store.state.tableData;
+    //   },
+    //   set(v) {
+    //     this.$store.state.tableData = v;
+    //   },
+    // },
   },
 
   methods: {
     getTableList() {
       // 通过接口获取数据 我暂时用的是vuex本地数据
+     getAllUserInfo({
+      page:1,
+      limit: 10,
+      formInline: { company:'',phone: '' }
+     }).then((result) => {
+     if (result.code === 200)
+      this.tableData = result.data;
+     })
     },
     search() {
       let data = JSON.parse(JSON.stringify(this.tableData));
@@ -237,7 +244,6 @@ export default {
         return false;
       }
     },
-
     handleClick(title, row) {
       // 点击查看该条数据
       this.editFormVisiable = true;

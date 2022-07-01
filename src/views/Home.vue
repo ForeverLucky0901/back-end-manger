@@ -11,8 +11,10 @@
         <HeadNav />
       </el-header>
       <!-- 右侧主体部分 -->
-      <el-main>
+      <el-main id="top">
         <router-view />
+        <!-- 返回顶部的按钮 -->
+        <el-backtop target="#top" :visibility-height="100"></el-backtop>
       </el-main>
     </el-container>
   </el-container>
@@ -46,9 +48,10 @@ export default {
 
 /* 主要内容区域 */
 .el-main {
-  /* background-color: #e9eef3; */
   color: #333;
   text-align: center;
-  /* line-height: 160px; */
+  /* overflow: auto; */
+   /* 这里给app一个滚动效果 */
+  overflow-y: scroll;
 }
 </style>

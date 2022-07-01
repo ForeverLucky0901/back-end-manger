@@ -3,9 +3,9 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>文章管理</el-breadcrumb-item>
-      <el-breadcrumb-item>{{ title }}文章</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ this.$route.params.title }}文章</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="menuname">{{ title }}文章</div>
+    <div class="menuname">{{ this.$route.params.title }}文章</div>
 
     <!-- 添加或者编辑页面 -->
 
@@ -17,7 +17,10 @@
         <el-input size="small" v-model="artForm.author" placeholder="请输入创作人"></el-input>
       </el-form-item>
       <el-form-item label="分类">
-        <el-input  size="small" v-model="artForm.classCate" placeholder="请选择文章分类"></el-input>
+        <!-- <el-input  size="small" v-model="artForm.classCate" placeholder="请选择文章分类"></el-input> -->
+          <el-select v-model="artForm.classCate" placeholder="请选择文章分类">
+            <el-option v-for="item in options" :key="item.id" :label="item.cateValue" :value="item.cateValue"></el-option >
+          </el-select>
       </el-form-item>
       <el-form-item label="简介">
         <el-input size="small" v-model="artForm.introduce" placeholder="请输入文章简介" ></el-input>
@@ -26,7 +29,7 @@
         <el-input size="small" v-model="artForm.tag" placeholder="请输入标签"></el-input>
       </el-form-item>
       <el-form-item label="链接">
-        <el-input size="small"  v-model="artForm.url" placeholder="请输入类目名称"></el-input>
+        <el-input size="small"  v-model="artForm.url" placeholder="请输入图片链接当做封面"></el-input>
       </el-form-item>
       <!-- 上传图片 -->
       <el-form-item label="上传">
@@ -91,7 +94,7 @@ export default {
         title: "",
         author: "",
         createTime: "",
-        classCate: "",
+        classCate: "" ,
         readNum: "",
         likeNum: "",
         keepNum: "",
@@ -101,6 +104,7 @@ export default {
         introduce: "",
         tag: "",
       },
+      options: this.$store.state.cateData,
       // 临时编辑的数据
       temEditData:{},
       // 复制的总数据
@@ -174,17 +178,18 @@ export default {
   },
   created() {
       if(this.$route.params.title === "添加") {
-        this.title = "title";
+        this.title = "添加";
         this.artForm = {}
       }else if(this.$route.params.title === "编辑") {
+         this.title = "编辑";
         console.log( this.$store.state.artEditData);
         // 复制临时编辑数据
         this.temEditData = this.$store.state.artEditData;
         // 复制临时总数据
-        this.allArtData = this.$store.state.artData;
+        this.allArtData = JSON.parse(JSON.stringify(this.$store.state.artData));
         this.artForm = this.temEditData
         // 图片回显不会，暂时搁置
-        // this.dialogImageUrl = this.$store.state.artEditData.cover
+        this.dialogImageUrl = this.$store.state.artEditData.cover
       }
   },
   methods: {
@@ -193,8 +198,11 @@ export default {
         this.artForm.id = nanoid(5);
         this.artForm.createTime = new Date().toLocaleString();
         this.artForm.cover = this.dialogImageUrl
+        console.log( this.artForm);
         if(this.title === "添加") {
-          this.$store.commit('setArtData',this.artForm)
+          console.log(1);
+          this.$store.commit('addArtData',this.artForm)
+           console.log(2);
         } else if (this.title === "编辑") {
           let index = this.allArtData.findIndex( item => item.id === this.temEditData.id)
           this.allArtData.splice(index, 1 ,this.artForm)
@@ -202,7 +210,7 @@ export default {
         }
         this.$message({
           type: "Success",
-          message: this.title + "成功"
+          message: this.$route.params.title + "成功"
         })
       })
     },
