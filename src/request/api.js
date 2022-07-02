@@ -7,10 +7,10 @@ import { get, post } from './http'
 export const getAllUserInfo = params => get('/base/getAllUserInfo', params);
 
 // 基础管理之添加
-export const addUserInfo = params => post('/base/addUserInfo', {params});
+export const addUserInfo = params => post('/base/addUserInfo', params);
 
 // 基础管理之编辑
-export const editUserInfo = params => post('/base/editUserInfo', {params});
+export const editUserInfo = params => post('/base/editUserInfo', params);
 
 // 基础管理之删除
-export const delUserInfo = params => post('/base/delUserInfo', {params});
+export const delUserInfo = params => get('/base/delUserInfo', params);

@@ -17,5 +17,5 @@ module.exports = app => {
   router.post('/base/editUserInfo', controller.base.user.editUserInfo);
 
   // 基础管理之用户信息{删除}
-  router.post('/base/delUserInfo', controller.base.user.delUserInfo);
+  router.get('/base/delUserInfo', controller.base.user.delUserInfo);
 };

@@ -22,7 +22,7 @@
  axios.defaults.timeout = 10000;
  
  // post请求头
- axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+//  axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
  
  // 请求拦截器
  axios.interceptors.request.use(    

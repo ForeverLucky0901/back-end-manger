@@ -6,17 +6,16 @@ class UserController extends Controller {
   async allUserInfo () {
     const { ctx } = this;
     // 默认第一页，每页默认显示10条数据，搜索的是公司名称和手机号码
-    const { page = 1, limit = 10, search = { company: '', phone: '' } } = ctx.query;
-    const res = await ctx.service.base.getAllUserInfo(page, limit, search.company, search.phone);
-    if (res.data.length > 0)
-    {
+    const { page = 1, limit = 10, company='', phone= ''  } = ctx.query;
+    const res = await ctx.service.base.getAllUserInfo(page, limit,company, phone);
+    if (res.data.length >= 0) {
       ctx.body = {
         code: 200,
         mes: '获取表数据成功',
+        totalCount: res.total,
         data:res.data
       }
-    } else
-    {
+    } else  {
       ctx.body = {
         code: 300,
         mes: '获取表数据失败'
@@ -26,24 +25,24 @@ class UserController extends Controller {
   async addUserInfo () {
     //添加基础管理之用户信息
     const { ctx } = this;
-    const { company, usename, address, phone } = ctx.request.body;
+    const { company, usename, address, phone ,sex} = ctx.request.body;
 
     // //判断参数非空
-    if (!usename || !phone || !company || !address)
-    {
-      ctx.body = {
-        code: 2,
-        mes: '缺少参数'
-      };
-      return;
-    }
+    // if (!usename || !phone || !company || !address || !sex)
+    // {
+    //   ctx.body = {
+    //     code: 2,
+    //     mes: '缺少参数'
+    //   };
+    //   return;
+    // }
 
     //判断姓名和手机号是否已经注册过了
     let isUse = await ctx.service.base.isReg(usename, phone);
     if (isUse.length != 0)
     {
       ctx.body = {
-        code: 3,
+        code: 301,
         mes: '该用户已经注册了，不能重复注册'
       };
       return;
@@ -53,13 +52,13 @@ class UserController extends Controller {
     if (res.affectedRows == 1)
     {
       ctx.body = {
-        code: 0,
+        code: 200,
         mes: '用户信息添加成功'
       };
     } else
     {
       ctx.body = {
-        code: 1,
+        code: 300,
         mes: '用户信息添加失败'
       };
     }
@@ -88,20 +87,18 @@ class UserController extends Controller {
   async delUserInfo () {
     // 删除用户信息
     const { ctx } = this;
-    const { id } = ctx.request.body;
+    const { id } = ctx.request.query;
     let res = await ctx.service.base.delBaseUserInfo(id);
-    //  console.log(res);
     if (res.affectedRows === 1)
     {
       ctx.body = {
-        code: 0,
+        code: 200,
         mes: "用户信息删除成功"
       }
     } else
     {
       ctx.body = {
-        code: 0,
-        tip: res.message,
+        code: 300,
         mes: "用户信息删除失败"
       }
     }

@@ -42,12 +42,18 @@
     <!-- 表格 -->
     <el-table
       :data="tableData"
+      v-loading="loading"
       border
       tooltip-effect="dark"
       size="medium"
       style="width: 100%"
     >
-      <el-table-column prop="id" label="ID" width="70"> </el-table-column>
+      <el-table-column prop="id" label="ID" width="70">
+        <template slot-scope="scope">
+          <!-- 去掉id前面的0 -->
+          <span> {{ scope.row.id.replace(/^[0]+/g, "") }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="company" label="公司" width="150">
       </el-table-column>
       <el-table-column prop="usename" label="用户名" width="120">
@@ -63,8 +69,11 @@
           <el-switch
             v-model="scope.row.state"
             active-color="#13ce66"
-            inactive-color="#ff4949">
+            inactive-color="#ff4949"
+          >
+         
           </el-switch>
+           {{scope.row.state}}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -83,7 +92,14 @@
     </el-table>
 
     <!-- 分页 -->
-    <Pagination v-show="tableData.length > 0" />
+    <Pagination
+      v-show="tableData.length > 0"
+      :currentPage="currentPage"
+      :totalCount="totalCount"
+      :pageSize="pageSize"
+      @handleChangeCurrentPage="handleChangeCurrentPage"
+      @handleChangeSize="handleChangeSize"
+    />
 
     <!-- 查看编辑的弹框 -->
     <el-dialog
@@ -162,10 +178,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import Pagination from "../../component/pagination.vue";
-import { nanoid } from "nanoid";
-import {getAllUserInfo,addUserInfo,editUserInfo,delUserInfo , } from '../../request/api'
+import {
+  getAllUserInfo,
+  addUserInfo,
+  editUserInfo,
+  delUserInfo,
+} from "../../request/api";
 export default {
   name: "Basic",
   components: {
@@ -174,7 +193,11 @@ export default {
   data() {
     return {
       title: "添加", // 默认是添加
+      currentPage: 1, //默认第一页
+      pageSize: 10, // 每页显示10条数据
+      totalCount: null, //总条数
       editFormVisiable: false, // 弹框默认关闭
+      loading: true,
       formInline: {
         company: "",
         phone: "",
@@ -208,41 +231,38 @@ export default {
   created() {
     this.getTableList();
   },
-  computed: {
-    // ...mapState({
-    //   tableData: (state) => state.tableData,
-    // }),
-    // tableData: {
-    //   get() {
-    //     return this.$store.state.tableData;
-    //   },
-    //   set(v) {
-    //     this.$store.state.tableData = v;
-    //   },
-    // },
-  },
-
   methods: {
     getTableList() {
-      // 通过接口获取数据 我暂时用的是vuex本地数据
-     getAllUserInfo({
-      page:1,
-      limit: 10,
-      formInline: { company:'',phone: '' }
-     }).then((result) => {
-     if (result.code === 200)
-      this.tableData = result.data;
-     })
+      // 通过接口获取数据
+      getAllUserInfo({
+        page: this.currentPage,
+        limit: this.pageSize,
+        company: this.formInline.company,
+        phone: this.formInline.phone,
+      }).then((result) => {
+        if (result.code === 200) this.loading = false;
+        this.tableData = result.data;
+        this.totalCount = result.totalCount;
+      });
     },
     search() {
-      let data = JSON.parse(JSON.stringify(this.tableData));
       //  非空验证
       if (
-        this.formInline.company.trim() === "" ||
+        this.formInline.company.trim() === "" &&
         this.formInline.phone.trim()
       ) {
-        return false;
+        this.getTableList(this.formInline.company, this.formInline.phone);
       }
+    },
+    handleChangeCurrentPage(val) {
+      // 页码变化
+      this.currentPage = val;
+      this.getTableList(this.currentPage, this.pageSize);
+    },
+    handleChangeSize(val) {
+      // 每页显示条数变化
+      this.pageSize = val;
+      this.getTableList(this.pageSize, this.currentPage);
     },
     handleClick(title, row) {
       // 点击查看该条数据
@@ -262,13 +282,21 @@ export default {
         type: "warning",
       })
         .then(() => {
-          // 跟新删除后的数据，并更新vuex中的数据
-          let index = this.tableData.findIndex((item) => item.id === row.id);
-          this.tableData.splice(index, 1);
-          this.$store.commit("setData", this.tableData);
-          this.$message({
-            type: "Success",
-            message: " 删除成功",
+          delUserInfo({ id: row.id }).then((res) => {
+            if (res.code === 200) {
+              // 删除成功
+              this.$message({
+                type: "Success",
+                message: res.mes,
+              });
+              this.getTableList();
+            } else if (res.code === 300) {
+              // 删除失败
+              this.$message({
+                type: "Warning",
+                message: res.mes,
+              });
+            }
           });
         })
         .catch(() => {
@@ -287,19 +315,42 @@ export default {
       // 关闭弹框
       this.editFormVisiable = false;
       this.$refs[editForm].validate((valid) => {
-        console.log(valid);
-        if (this.title === "添加") {
-          // 向vuex中添加一条数据
-          this.editForm.id = nanoid(5); //随机id
-          this.editForm.createTime = new Date().toLocaleString();
-          this.$store.commit("addUser", this.editForm);
-        } else if (this.title === "编辑") {
-          // 剪辑数据
-          let index = this.tableData.findIndex(
-            (item) => item.id === this.editForm.id
-          );
-          this.tableData.splice(index, 1, this.editForm);
-          this.$store.commit("setData", this.tableData);
+        if (valid) {
+          if (this.title === "添加") {
+            this.editForm.createTime = new Date().toLocaleString();
+            addUserInfo({
+              company: this.editForm.company,
+              usename: this.editForm.usename,
+              address: this.editForm.address,
+              phone: this.editForm.phone,
+              sex: this.editForm.sex,
+              createTime: new Date().toLocaleString(),
+              state: this.editForm.state,
+            }).then((res) => {
+              this.$message({
+                type: "Success",
+                message: res.mes,
+              });
+            });
+          } else if (this.title === "编辑") {
+            // 编辑数据
+            editUserInfo({
+              id: this.editForm.id,
+              company: this.editForm.company,
+              usename: this.editForm.usename,
+              address: this.editForm.address,
+              phone: this.editForm.phone,
+              sex: this.editForm.sex,
+              createTime: new Date().toLocaleString(),
+              state: this.editForm.state,
+            }).then((res) => {
+              this.$message({
+                type: "Success",
+                message: res.mes,
+              });
+            });
+          }
+          this.getTableList();
         }
       });
     },
@@ -310,7 +361,6 @@ export default {
 <style>
 .user-search {
   display: flex;
-  /* padding: 10px 0; */
 }
 .el-form-item__content {
   display: flex;
