@@ -39,15 +39,4 @@ a {
   width: 80px !important;
   text-align: left !important;
 }
-.content p span {
-  text-align: left;
-  font-size: 14px;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  line-height: 18px;
-}
-.content p h1 {
-  text-align: left;
-}
-.content p img {
-  padding: 5px 0;
-}
+/* 滚动条样式调整 */
